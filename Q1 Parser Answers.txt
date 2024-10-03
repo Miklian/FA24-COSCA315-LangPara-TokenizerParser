@@ -1,0 +1,44 @@
+Q1 Parser Answers:
+a. When .//prog.in is:
+    int A, B, C, D=2
+    A = 3 + 5
+    B = A * 10 +
+    C = 5 + A / D + 3
+Why does the error message say:
+    Error at line: 4: Identifier expected, found =
+    Error at line: 4: Identifier expected, found 5
+    Error at line: 4: Identifier expected, found +
+    Error at line: 4: equal sign expected, found /
+    Error at line: 4: equal sign expected, found +
+    Error at line: 4: Identifier expected, found 3
+    Total number of errors: 6
+Why is an Identifier expected?
+
+The BNF requires for an <expr> to follow after the ADD_OP. 
+<expr> can be a <term> which can be a <factor>. 
+A <factor> can either be an ident, intLit, or another <expr>
+So the parser skips until it reaches C and completes the <expr>, 
+but then the sequence is one char behind/missing, with the start of the new <stmt> being 
+= 5 + A / D + 3
+An Identifier is expected, but the parser found = instead.
+Then with = as the token, it expects another <ident>, but finds 5 instead.
+The parser is skewed ever since the start of the 4th line is taken as the end of the third line.
+
+b. When .//prog.in is:
+    int A, B, C
+    float D=2.1
+    A = 3 + 5
+    B = A * 10 + 3
+    C = 5 + A / D + 3
+Why does the error message say:
+    Error at line: 1: Undefined identifer float
+    Error at line: 1: equal sign expected, found D
+    Error at line: 1: Identifier expected, found =
+    Error at line: 1: equal sign expected, found 2.1
+    Total number of errors: 4
+Why do you think the error message: equal sign expected, found D?
+
+The parser is going through the rule <assign> -> <identifier> = <expr>.
+"float" was undefined in the symbols table, and 
+the parser thought that it was a simple <ident> and 
+expected "=" after alongside an <expr>.

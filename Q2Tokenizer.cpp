@@ -17,14 +17,19 @@ int line = 1;   // variable to keep track of the line number from the source cod
 /******************************************************/
 /*   Helping function to display the token as a string */
 void prt (Tokens nt) {
-	// Type your code here
+	switch (nt) {
+		case A: cout << "<A>"; break;
+		case B: cout << "<B>"; break;
+		case C: cout << "<C>"; break;
+		case ENDFILE: cout << "<ENDOFFILE>"; break;
+		case UNKNOWN: cout << "<UNKNOWN>"; break;
+	}
 };
 
 /* errMsg - function to display the error message with the line number of the error detected. */
 void errMsg (string msg) {
 	cout << "Error at line: " << line << ": " << msg << endl;
 	errors++;
-	
 }
 
 /*****************************************************/
@@ -42,7 +47,6 @@ char getChar() {
 	char ch = infp.get();
 	if (ch == '\n') {		
 		line++;
-		
 	}
 	return ch;
 }
@@ -61,8 +65,11 @@ char getNonSpaceChar() {
 /*******************************************************************
 LookupKeyword - a simple lookup code for keywords in the language: */
 Tokens lookupKeywords (string lexeme) {
-	// return keyword token
-	// Type your code here
+	Tokens token = UNKNOWN;
+	if (lexeme == "a") token = A;
+	else if (lexeme == "b") token = B;
+	else if (lexeme == "c") token = C;
+	return token;
 }
 
 /*****************************************************/
@@ -73,23 +80,25 @@ Tokens tokenizer() {
 	lexeme = "";
 	if (isspace(nextChar)) nextChar = getNonSpaceChar();
 	if (nextChar == 'a') {
-		// Type your code here
+		lexeme = nextChar;
+		nextToken = lookupKeywords (lexeme);
 	}
 	else if (nextChar == 'b') {
-		// Type your code here
+		lexeme = nextChar;
+		nextToken = lookupKeywords (lexeme);
 	}
 	else if (nextChar == 'c') {
 		// Type your code here
 	}
 	else if (nextChar == EOF) {
-			nextToken = ENDFILE;
-			lexeme = "EOF";
-
+		nextToken = ENDFILE;
+		lexeme = "EOF";
 	}
-  cout << "Token read:\t"; prt(nextToken); 
-  cout << " Lexeme: " << lexeme << endl;
-  
-  return nextToken;
+
+	cout << "Token read:\t"; prt(nextToken); 
+	cout << " Lexeme: " << lexeme << endl;
+	
+	return nextToken;
 }
 
 /******************************************************/

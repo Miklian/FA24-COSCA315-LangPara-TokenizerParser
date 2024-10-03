@@ -20,7 +20,9 @@ struct item
     int intValue;
     float floatValue;
     string type;
-} symbolTable[100];
+} 
+
+symbolTable[100];
 int tableIndex = 0; // symbol table index
 
 int errors = 0; // counter for error messages
@@ -56,7 +58,6 @@ void prt (Tokens nt) {
 void errMsg (string msg) {
 	cout << "Error at line: " << line << ": " << msg << endl;
 	errors++;
-	
 }
 
 /*****************************************************/
@@ -211,7 +212,7 @@ Tokens factor(Tokens nextToken) {
 			if (nextToken == RIGHT_PAREN) {
 				nextToken = tokenizer();
 			} else
-				errMsg("Right paranthesis expeceted.");
+				errMsg("Right parenthesis expected.");
 		} // End of if (nextToken == LEFT_PARENT
 		else { // ERROR: not ident, int_lit, and left_paren
 			nextToken = ENDFILE;
@@ -328,7 +329,7 @@ Tokens floatIdent () {
 			else break;
 		}	
 	}
-	else errMsg ("Identifier expected, fount " + lexeme);	
+	else errMsg ("Identifier expected, found " + lexeme);	
 	return nextToken;
 }
 
@@ -345,7 +346,7 @@ Tokens intIdent () {
 			else break;
 		}	
 	}
-	else errMsg ("Identifier expected, fount " + lexeme);	
+	else errMsg ("Identifier expected, found " + lexeme);	
 	return nextToken;
 }
 
@@ -401,5 +402,19 @@ Tokens stmt (Tokens nextToken) {
 /******************************************************/
 /* main driver */
 int main() {
-	
+	infp.open(".\\prg.in");
+	if (!infp) {
+		cout << "ERROR - cannot open file\n";
+		errors++;
+	}
+	else {
+		nextChar = ' ';
+		Tokens nextToken = tokenizer();
+		do {
+			nextToken = stmt(nextToken);
+			if (errors > 10) break;
+		} while (nextToken != ENDFILE);
+	}
+	cout << "Total number of errors: " << errors << endl;
+	return 0;
 }

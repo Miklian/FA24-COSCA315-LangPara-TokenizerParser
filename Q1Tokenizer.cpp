@@ -13,8 +13,6 @@ Tokens nextToken;
 string lexeme;
 char nextChar;
 
-void addChar();
-
 int errors = 0; // counter for error messages
 int line = 1;   // variable to keep track of the line number from the source code
 
@@ -105,6 +103,7 @@ Tokens lookupKeywords (string lexeme) {
 Tokens tokenizer() {
 	Tokens nextToken = ENDFILE;
 	lexeme = "";
+
 	if (isspace(nextChar)) nextChar = getNonSpaceChar();
 	if (isalpha(nextChar)) {
 		while (isalpha(nextChar) || isdigit(nextChar))
@@ -139,17 +138,17 @@ Tokens tokenizer() {
 		lexeme = nextChar;
 		nextToken = lookupKeywords (lexeme);
 		nextChar = ' ';
-  }
-  cout << "Token read:\t" << nextToken << " "; prt(nextToken); 
-  cout << " Lexeme: " << lexeme << endl;
-  
-  return nextToken;
+	}
+	cout << "Token read:\t" << nextToken << " "; prt(nextToken); 
+	cout << " Lexeme: " << lexeme << endl;
+	
+	return nextToken;
 }
 
 /******************************************************/
 /* main driver */
 int main() {
-	infp.open("prg.in");
+	infp.open(".\\prg.in");
     if (!infp)
     {
         cout << "Error: File could not be opened!\n" << endl;
