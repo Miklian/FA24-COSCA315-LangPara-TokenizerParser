@@ -40,6 +40,7 @@ void prt (Tokens nt) {
 		case ASSIGN_OP: cout << "<ASSIGN>"; break;
 		case ADD_OP: cout << "<ADD_OP>"; break;
 		case SUB_OP: cout << "<SUB_OP>"; break;
+		case EQUAL: cout << "<EQUAL>"; break;
 		case MULT_OP: cout << "<MULT_OP>"; break;
 		case DIV_OP: cout << "<DIV_OP>"; break;
 		case LEFT_PAREN: cout << "<LEFT_PAREN>"; break;
@@ -143,15 +144,14 @@ Tokens tokenizer() {
 	else if (nextChar == EOF) {
 			nextToken = ENDFILE;
 			lexeme = "EOF";
-
 	}
 	else { // operator
 		lexeme = nextChar;
 		nextToken = lookupKeywords (lexeme);
 		nextChar = ' ';
   }
-  //cout << "Token read:\t"; prt(nextToken); 
-  //cout << " Lexeme: " << lexeme << endl;
+  cout << "Token read:\t"; prt(nextToken); 
+  cout << " Lexeme: " << lexeme << endl;
   return nextToken;
 }
 
@@ -341,7 +341,7 @@ Tokens intIdent () {
 	Tokens nextToken;
 	if (nextToken == IDENT) {
 		while (nextToken == IDENT) {
-			intVar ();
+			intVar();
 			if (nextToken == COMMA) nextToken = tokenizer();
 			else break;
 		}	

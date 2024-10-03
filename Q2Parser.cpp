@@ -66,9 +66,9 @@ char getNonSpaceChar() {
 LookupKeyword - a simple lookup code for keywords in the language: */
 Tokens lookupKeywords (string lexeme) {
 	Tokens token = UNKNOWN;
-	if (lexeme == "a") return token = A;
-	if (lexeme == "b") return token = B;
-	if (lexeme == "c") return token = C;
+	if (lexeme == "a") token = A;
+	else if (lexeme == "b") token = B;
+	else if (lexeme == "c") token = C;
 	return token;
 }
 
@@ -80,23 +80,26 @@ Tokens tokenizer() {
 	lexeme = "";
 	
 	if (isspace(nextChar)) nextChar = getNonSpaceChar();
-	
 	if (nextChar == 'a') {
-		// Type your code here
+		addChar(nextChar);
+		nextChar = getChar();
+		nextToken = A;
 	}
 	else if (nextChar == 'b') {
-		// Type your code here
+		addChar(nextChar);
+		nextChar = getChar();
+		nextToken = B;
 	}
 	else if (nextChar == 'c') {
-		// Type your code here
+		addChar(nextChar);
+		nextChar = getChar();
+		nextToken = C;
 	}
 	else if (nextChar == EOF) {
-			nextToken = ENDFILE;
-			lexeme = "EOF";
-
+		nextToken = ENDFILE;
+		lexeme = "EOF";
 	}
-  
-  return nextToken;
+  	return nextToken;
 }
 
 /*************************************************/
@@ -104,9 +107,13 @@ Tokens tokenizer() {
 */
 Tokens CParser (Tokens nextToken) {
 	if (nextToken == C) {
+		//cout << "Token read:\t"; prt(nextToken); 
+		//cout << " Lexeme: " << lexeme << endl;
 		nextToken = tokenizer();
 	}
-	else errMsg("Expecting c");
+	else errMsg("Expecting b, found " + lexeme);
+
+	return nextToken;
 }
 
 /*************************************************/
@@ -115,34 +122,44 @@ Tokens CParser (Tokens nextToken) {
 Tokens BParser (Tokens nextToken) {
 	if (nextToken == B) {
 		while (nextToken == B) {
+			//cout << "Token read:\t"; prt(nextToken); 
+			//cout << " Lexeme: " << lexeme << endl;
 			nextToken = tokenizer(); //keep looping as it reads b's
 		}
 	}
-	else errMsg("Expecting b");
+	else errMsg("Expecting EOF, found " + lexeme);
+
+	return nextToken;
 }
 
 /***************************************************/
 /* <A> -> a<A> | a
 */
 Tokens AParser (Tokens nextToken) {
-	if (nextToken == A) {
-		while (nextToken == B) {
-			nextToken = tokenizer(); //keep looping as it reads b's
+	if (nextToken = A) {
+		while (nextToken == A) {
+			//cout << "Token read:\t"; prt(nextToken); 
+			//cout << " Lexeme: " << lexeme << endl;
+			nextToken = tokenizer(); //keep looping as it reads a's
 		}
 	}
-	else errMsg("Expecting a");
+	else errMsg("Expecting a, found " + lexeme);
+
+	return nextToken;
 }
 
 /********************************************/
 /* stmt - statement parser by the rule:
    <stmt> -> <A><C><B> | <A>
 */
-Tokens S (Tokens nextToken) {
+Tokens S(Tokens nextToken) {
 	AParser(nextToken);
 	if (nextToken == C) {	// <C> -> c
 		CParser(nextToken);
 		BParser(nextToken);
 	}
+	nextToken = tokenizer(); //catching EOF
+	return nextToken;
 }
 
 /******************************************* End of Syntax Analyzer (parser) **************************************************************************/
@@ -162,6 +179,7 @@ int main() {
 			nextToken = S(nextToken);
 			if (errors > 10) break;
 		} while (nextToken != ENDFILE);
+		
 	}
 	cout << "Total number of errors: " << errors << endl;
 	return 0;

@@ -80,15 +80,19 @@ Tokens tokenizer() {
 	lexeme = "";
 	if (isspace(nextChar)) nextChar = getNonSpaceChar();
 	if (nextChar == 'a') {
-		lexeme = nextChar;
-		nextToken = lookupKeywords (lexeme);
+		addChar(nextChar);
+		nextChar = getChar();
+		nextToken = A;
 	}
 	else if (nextChar == 'b') {
-		lexeme = nextChar;
-		nextToken = lookupKeywords (lexeme);
+		addChar(nextChar);
+		nextChar = getChar();
+		nextToken = B;
 	}
 	else if (nextChar == 'c') {
-		// Type your code here
+		addChar(nextChar);
+		nextChar = getChar();
+		nextToken = C;
 	}
 	else if (nextChar == EOF) {
 		nextToken = ENDFILE;
