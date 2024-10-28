@@ -81,25 +81,27 @@ Tokens tokenizer() {
 	
 	if (isspace(nextChar)) nextChar = getNonSpaceChar();
 	if (nextChar == 'a') {
-		nextToken = A;
 		addChar(nextChar);
 		nextChar = getChar();
+		nextToken = A;
 	}
 	else if (nextChar == 'b') {
-		nextToken = B;
 		addChar(nextChar);
 		nextChar = getChar();
+		nextToken = B;
 	}
 	else if (nextChar == 'c') {
-		nextToken = C;
 		addChar(nextChar);
 		nextChar = getChar();
+		nextToken = C;
 	}
 	else if (nextChar == EOF) {
 		nextToken = ENDFILE;
 		lexeme = "EOF";
 	}
 
+	cout << "Token read:\t"; prt(nextToken); 
+	cout << " Lexeme: " << lexeme << endl;
   	return nextToken;
 }
 
@@ -110,7 +112,7 @@ Tokens CParser (Tokens nextToken) {
 	if (nextToken == C) {
 		nextToken = tokenizer();
 	}
-	else errMsg("Expecting c, found " + lexeme);
+	else errMsg("Expecting b, found " + lexeme);
 
 	return nextToken;
 }
@@ -121,11 +123,12 @@ Tokens CParser (Tokens nextToken) {
 Tokens BParser (Tokens nextToken) {
 	if (nextToken == B) {
 		while (nextToken == B) {
-			nextToken = tokenizer(); //keep looping as it reads b's	
+			nextToken = tokenizer(); //keep looping as it reads b's
 		}
 	}
-	else errMsg("Expecting b, found " + lexeme);
+	else errMsg("Expecting EOF, found " + lexeme);
 	
+	nextToken = tokenizer();
 	return nextToken;
 }
 
@@ -137,8 +140,10 @@ Tokens AParser (Tokens nextToken) {
 		while (nextToken == A) {
 			nextToken = tokenizer(); //keep looping as it reads a's
 		}
+		nextToken = tokenizer();	//outside the loop
 	}
 	else errMsg("Expecting a, found " + lexeme);
+
 	return nextToken;
 }
 
@@ -150,12 +155,9 @@ Tokens S(Tokens nextToken) {
 	AParser(nextToken);
 	if (nextToken == C) {	// <C> -> c
 		CParser(nextToken);
-			if (nextToken == C) {
-				errMsg("Too many c's, expected b or EOF");
-			}
 		BParser(nextToken);
 	}
-	nextToken = tokenizer(); //catching eof
+	nextToken = tokenizer(); //keep looping as it reads a's
 	return nextToken;
 }
 
